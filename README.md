@@ -17,6 +17,18 @@ InstantStyle is a general framework that employs two straightforward yet potent 
 
 <img src='assets/pipe.png'>
 
+## Principle
+
+Separating Content from Image. Benefit from the good characterization of CLIP global features, after subtracting the content text fea- tures from the image features, the style and content can be explicitly decoupled. Although simple, this strategy is quite effective in mitigating content leakage.
+<p align="center">
+  <img src="assets/subtraction.png">
+</p>
+
+Injecting into Style Blocks Only. Empirically, each layer of a deep network captures different semantic information the key observation in our work is that there exists two specific attention layers handling style. Specifically, we find up blocks.0.attentions.1 and down blocks.2.attentions.1 capture style (color, material, atmosphere) and spatial layout (structure, composition) respectively.
+<p align="center">
+  <img src="assets/tree.png">
+</p>
+
 ## Release
 - [2024/04/03] 🔥 We release the [technical report](https://arxiv.org/abs/2404.02733).
 
