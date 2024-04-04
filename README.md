@@ -1,7 +1,7 @@
 <div align="center">
 <h1>InstantStyle: Free Lunch towards Style-Preserving in Text-to-Image Generation</h1>
 
-[**Haofan Wang**](https://haofanwang.github.io/)<sup>*</sup> · [**Qixun Wang**](https://github.com/wangqixun) · [**Xu Bai**](https://huggingface.co/baymin0220) · [**Zekui Qin**](https://github.com/ZekuiQin) · [**Anthony Chen**](https://antonioo-c.github.io/)
+[**Haofan Wang**](https://haofanwang.github.io/)<sup>*</sup> · [Matteo Spinelli](https://github.com/cubiq) · [**Qixun Wang**](https://github.com/wangqixun) · [**Xu Bai**](https://huggingface.co/baymin0220) · [**Zekui Qin**](https://github.com/ZekuiQin) · [**Anthony Chen**](https://antonioo-c.github.io/)
 
 InstantX Team 
 
