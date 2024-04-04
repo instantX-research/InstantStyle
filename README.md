@@ -32,9 +32,6 @@ Injecting into Style Blocks Only. Empirically, each layer of a deep network capt
 ## Release
 - [2024/04/03] 🔥 We release the [technical report](https://arxiv.org/abs/2404.02733).
 
-## Download
-Follow [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter?tab=readme-ov-file#download-models) to download pre-trained checkpoints.
-
 ## Demos
 
 ### Stylized Synthesis
@@ -55,6 +52,9 @@ Follow [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter?tab=readme-ov-fi
 <p align="center">
   <img src="assets/comparison.png">
 </p>
+
+## Download
+Follow [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter?tab=readme-ov-file#download-models) to download pre-trained checkpoints.
 
 ## Usage
 
@@ -105,11 +105,13 @@ images = ip_model.generate(pil_image=image,
 images[0].save("result.png")
 ```
 
-We will support diffusers API soon.
+## Resources
+- ComfyUI Support: https://github.com/cubiq/ComfyUI_IPAdapter_plus
 
 ## TODO
 - Support in diffusers API.
-- Support InstantID.
+- Support image-based stylization.
+- Support InstantID for face stylization.
 
 ## Sponsor Us
 If you find this project useful, you can buy us a coffee via Github Sponsor! We support [Paypal](https://ko-fi.com/instantx) and [WeChat Pay](https://tinyurl.com/instantx-pay).
