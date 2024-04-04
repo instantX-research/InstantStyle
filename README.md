@@ -18,7 +18,7 @@ InstantStyle is a general framework that employs two straightforward yet potent 
 <img src='assets/pipe.png'>
 
 ## Release
-- [2024/04/04] 🔥 We release the [technical report](https://arxiv.org/abs/2401.07519).
+- [2024/04/03] 🔥 We release the [technical report](https://arxiv.org/abs/2404.02733).
 
 ## Demos
 
@@ -94,11 +94,13 @@ If you find this project useful, you can buy us a coffee via Github Sponsor! We 
 If you find InstantStyle useful for your research and applications, please cite us using this BibTeX:
 
 ```bibtex
-@article{wang2024instantid,
-  title={InstantID: Zero-shot Identity-Preserving Generation in Seconds},
-  author={Wang, Qixun and Bai, Xu and Wang, Haofan and Qin, Zekui and Chen, Anthony},
-  journal={arXiv preprint arXiv:2401.07519},
-  year={2024}
+@misc{wang2024instantstyle,
+      title={InstantStyle: Free Lunch towards Style-Preserving in Text-to-Image Generation}, 
+      author={Haofan Wang and Qixun Wang and Xu Bai and Zekui Qin and Anthony Chen},
+      year={2024},
+      eprint={2404.02733},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
 }
 ```
 
