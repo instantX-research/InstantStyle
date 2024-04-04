@@ -3,7 +3,7 @@
 
 [**Haofan Wang**](https://haofanwang.github.io/)<sup>*</sup> · [**Qixun Wang**](https://github.com/wangqixun) · [**Xu Bai**](https://huggingface.co/baymin0220) · [**Zekui Qin**](https://github.com/ZekuiQin) · [**Anthony Chen**](https://antonioo-c.github.io/)
 
-InstantX Team
+InstantX Team 
 
 <sup>*</sup>corresponding authors
 
@@ -18,7 +18,6 @@ InstantStyle is a general framework that employs two straightforward yet potent 
 <img src='assets/pipe.png'>
 
 ## Release
-
 - [2024/04/03] 🔥 We release the [technical report](https://arxiv.org/abs/2404.02733).
 
 ## Demos
@@ -43,7 +42,6 @@ InstantStyle is a general framework that employs two straightforward yet potent 
 </p>
 
 ## Usage
-
 ```python
 import torch
 from diffusers import StableDiffusionXLPipeline
@@ -90,11 +88,9 @@ images[0].save("result.png")
 ```
 
 ## Sponsor Us
-
 If you find this project useful, you can buy us a coffee via Github Sponsor! We support [Paypal](https://ko-fi.com/instantx) and [WeChat Pay](https://tinyurl.com/instantx-pay).
 
 ## Cite
-
 If you find InstantStyle useful for your research and applications, please cite us using this BibTeX:
 
 ```bibtex
@@ -108,4 +104,4 @@ If you find InstantStyle useful for your research and applications, please cite 
 }
 ```
 
-For any question, please feel free to contact us via <haofanwang.ai@gmail.com>.
+For any question, please feel free to contact us via haofanwang.ai@gmail.com.
