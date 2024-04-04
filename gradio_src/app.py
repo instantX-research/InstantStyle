@@ -1,4 +1,3 @@
-
 import os 
 donwload_repo_loc= "./models/image_encoder/"
 os.system("pip install -U peft")
@@ -6,7 +5,7 @@ os.system("pip install -U peft")
 # os.system(f"wget -O {donwload_repo_loc}model.safetensors https://huggingface.co/h94/IP-Adapter/resolve/main/sdxl_models/image_encoder/model.safetensors?download=true")
 # os.system(f"wget -O {donwload_repo_loc}pytorch_model.bin https://huggingface.co/h94/IP-Adapter/resolve/main/sdxl_models/image_encoder/pytorch_model.bin?download=true")
 
-import space
+import spaces
 import gradio as gr
 import torch
 from diffusers import StableDiffusionXLPipeline
@@ -70,7 +69,7 @@ with block:
     with gr.Row():
        
         with gr.Column():
-            gr.Markdown("## <h1 align='center'>InstantStyle: Free Lunch towards Style-Preserving in Text-to-Image Generation  </h1>")
+            # gr.Markdown("## <h1 align='center'>InstantStyle: Free Lunch towards Style-Preserving in Text-to-Image Generation  </h1>")
             gr.Markdown(DESCRIPTION)
     with gr.Tabs():
         with gr.Row():
@@ -92,6 +91,3 @@ with block:
                                   outputs=[generated_image])
 
 block.launch(max_threads=10)
-
-
-
