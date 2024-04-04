@@ -1,3 +1,4 @@
+
 import os 
 donwload_repo_loc= "./models/image_encoder/"
 os.system("pip install -U peft")
@@ -75,7 +76,7 @@ with block:
         with gr.Row():
             with gr.Column():
                 image_pil = gr.Image(label="Style Image", type='pil')
-                target = gr.Dropdown(["Load original IP-Adapter","Load only style blocks","Load style+layout block"], label="LORA Model", info="Which finetuned model to use?")
+                target = gr.Dropdown(["Load original IP-Adapter","Load only style blocks","Load style+layout block"], label="Load Style", info="IP-Adapter Layers")
                 prompt = gr.Textbox(label="Prompt",value="a cat, masterpiece, best quality, high quality")
                 n_prompt = gr.Textbox(label="Neg Prompt",value="text, watermark, lowres, low quality, worst quality, deformed, glitch, low contrast, noisy, saturation, blurry")
                 scale = gr.Slider(minimum=0,maximum=2.0, step=0.01,value=1.0, label="scale")
@@ -91,3 +92,6 @@ with block:
                                   outputs=[generated_image])
 
 block.launch(max_threads=10)
+
+
+
