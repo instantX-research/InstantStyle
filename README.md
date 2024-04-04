@@ -107,6 +107,10 @@ images[0].save("result.png")
 
 We will support diffusers API soon.
 
+## TODO
+- Support in diffusers API.
+- Support InstantID.
+
 ## Sponsor Us
 If you find this project useful, you can buy us a coffee via Github Sponsor! We support [Paypal](https://ko-fi.com/instantx) and [WeChat Pay](https://tinyurl.com/instantx-pay).
 
