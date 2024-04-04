@@ -20,6 +20,9 @@ InstantStyle is a general framework that employs two straightforward yet potent 
 ## Release
 - [2024/04/03] 🔥 We release the [technical report](https://arxiv.org/abs/2404.02733).
 
+## Download
+Follow [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter?tab=readme-ov-file#download-models) to download pre-trained checkpoints.
+
 ## Demos
 
 ### Stylized Synthesis
@@ -42,6 +45,9 @@ InstantStyle is a general framework that employs two straightforward yet potent 
 </p>
 
 ## Usage
+
+Our method is fully compatible with [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter). But for feature subtraction, it only works with IP-Adapter using global embeddings.
+
 ```python
 import torch
 from diffusers import StableDiffusionXLPipeline
@@ -86,6 +92,8 @@ images = ip_model.generate(pil_image=image,
 
 images[0].save("result.png")
 ```
+
+We will support diffusers API soon.
 
 ## Sponsor Us
 If you find this project useful, you can buy us a coffee via Github Sponsor! We support [Paypal](https://ko-fi.com/instantx) and [WeChat Pay](https://tinyurl.com/instantx-pay).
