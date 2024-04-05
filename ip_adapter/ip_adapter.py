@@ -121,9 +121,12 @@ class IPAdapter:
                         num_tokens=self.num_tokens,
                     ).to(self.device, dtype=torch.float16)
                 else:
-                    attn_procs[name] = AttnProcessor(
-                        hidden_size=hidden_size, 
-                        cross_attention_dim=cross_attention_dim, 
+                    attn_procs[name] = IPAttnProcessor(
+                        hidden_size=hidden_size,
+                        cross_attention_dim=cross_attention_dim,
+                        scale=1.0,
+                        num_tokens=self.num_tokens,
+                        skip=True
                     ).to(self.device, dtype=torch.float16)
         unet.set_attn_processor(attn_procs)
         if hasattr(self.pipe, "controlnet"):
