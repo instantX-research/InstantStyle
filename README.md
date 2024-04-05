@@ -1,7 +1,7 @@
 <div align="center">
 <h1>InstantStyle: Free Lunch towards Style-Preserving in Text-to-Image Generation</h1>
 
-[**Haofan Wang**](https://haofanwang.github.io/)<sup>*</sup> · [Matteo Spinelli](https://github.com/cubiq) · [**Qixun Wang**](https://github.com/wangqixun) · [**Xu Bai**](https://huggingface.co/baymin0220) · [**Zekui Qin**](https://github.com/ZekuiQin) · [**Anthony Chen**](https://antonioo-c.github.io/)
+[**Haofan Wang**](https://haofanwang.github.io/)<sup>*</sup> · [**Matteo Spinelli**](https://github.com/cubiq) · [**Qixun Wang**](https://github.com/wangqixun) · [**Xu Bai**](https://huggingface.co/baymin0220) · [**Zekui Qin**](https://github.com/ZekuiQin) · [**Anthony Chen**](https://antonioo-c.github.io/)
 
 InstantX Team 
 
@@ -55,11 +55,11 @@ Injecting into Style Blocks Only. Empirically, each layer of a deep network capt
 </p>
 
 ## Download
-Follow [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter?tab=readme-ov-file#download-models) to download pre-trained checkpoints.
+Follow [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter?tab=readme-ov-file#download-models) to download pre-trained checkpoints from [here](https://huggingface.co/h94/IP-Adapter).
 
 ## Usage
 
-Our method is fully compatible with [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter). But for feature subtraction, it only works with IP-Adapter using global embeddings.
+Our method is fully compatible with [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter). But for feature subtraction, it only works with IP-Adapter using global embeddings. All block names in SDXL can be found in [attn_blocks.py](https://github.com/InstantStyle/InstantStyle/blob/main/attn_blocks.py).
 
 ```python
 import torch
@@ -117,7 +117,8 @@ python app.py #remove spaces import from the fucntion this for GPU Server in Hug
 - ComfyUI Support: https://github.com/cubiq/ComfyUI_IPAdapter_plus
 
 ## TODO
-- Support in diffusers API.
+- Support in diffusers API, check our [PR](https://github.com/huggingface/diffusers/pull/7586).
+- Support stable diffusion 1.5.
 - Support image-based stylization.
 - Support InstantID for face stylization.
 
