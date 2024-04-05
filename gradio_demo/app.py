@@ -1,4 +1,3 @@
-
 import os 
 donwload_repo_loc= "./models/image_encoder/"
 os.system("pip install -U peft")
@@ -65,7 +64,7 @@ DESCRIPTION = """
 This is a demo of  https://github.com/InstantStyle/InstantStyle.
 """
 
-block = gr.Blocks(css="footer {visibility: hidden}").queue()
+block = gr.Blocks(css="footer {visibility: hidden}").queue(max_size=10)
 with block:
     with gr.Row():
        
@@ -91,7 +90,4 @@ with block:
         generate_button.click(fn=create_image, inputs=[image_pil,target,prompt,n_prompt,scale, guidance_scale,num_samples,num_inference_steps,seed], 
                                   outputs=[generated_image])
 
-block.launch(max_threads=10)
-
-
-
+block.launch()
