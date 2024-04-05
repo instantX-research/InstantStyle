@@ -54,7 +54,7 @@ Injecting into Style Blocks Only. Empirically, each layer of a deep network capt
 </p>
 
 ## Download
-Follow [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter?tab=readme-ov-file#download-models) to download pre-trained checkpoints.
+Follow [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter?tab=readme-ov-file#download-models) to download pre-trained checkpoints from [here](https://huggingface.co/h94/IP-Adapter).
 
 ## Usage
 

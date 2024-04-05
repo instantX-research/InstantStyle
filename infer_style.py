@@ -26,7 +26,7 @@ image = "./assets/0.jpg"
 image = Image.open(image)
 image.resize((512, 512))
 
-# generate image variations with only image prompt
+# generate image
 images = ip_model.generate(pil_image=image,
                             prompt="a cat, masterpiece, best quality, high quality",
                             negative_prompt= "text, watermark, lowres, low quality, worst quality, deformed, glitch, low contrast, noisy, saturation, blurry",
