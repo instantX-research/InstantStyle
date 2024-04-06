@@ -123,7 +123,7 @@ python app.py #remove spaces import from the fucntion this for GPU Server in Hug
 - Support InstantID for face stylization.
 
 ## Sponsor Us
-If you find this project useful, you can buy us a coffee via Github Sponsor! We support [Paypal](https://ko-fi.com/instantx) and [WeChat Pay](https://tinyurl.com/instantx-pay).
+If you find this project useful, you can buy us a coffee via GitHub Sponsor! We support [Paypal](https://ko-fi.com/instantx) and [WeChat Pay](https://tinyurl.com/instantx-pay).
 
 ## Cite
 If you find InstantStyle useful for your research and applications, please cite us using this BibTeX:
