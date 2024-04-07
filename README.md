@@ -31,6 +31,8 @@ Injecting into Style Blocks Only. Empirically, each layer of a deep network capt
 </p>
 
 ## Release
+- [2024/04/07] 🔥 We support image-based stylization, more information can be found [here](https://github.com/InstantStyle/InstantStyle/blob/main/infer_style_controlnet.py).
+- [2024/04/07] 🔥 We support an experimental version for SD1.5, more information can be found [here](https://github.com/InstantStyle/InstantStyle/blob/main/infer_style_sd15.py).
 - [2024/04/03] 🔥 We release the [technical report](https://arxiv.org/abs/2404.02733).
 
 ## Demos
@@ -118,8 +120,7 @@ python app.py #remove spaces import from the function this for GPU Server in Hug
 
 ## TODO
 - Support in diffusers API, check our [PR](https://github.com/huggingface/diffusers/pull/7586).
-- Support image-based stylization.
-- Support InstantID for face stylization.
+- Support InstantID for face stylization once stars reach 1K.
 
 ## Disclaimer
 Our released codes and checkpoints are for non-commercial research purposes only. Users are granted the freedom to create images using this tool, but they are obligated to comply with local laws and utilize it responsibly. The developers will not assume any responsibility for potential misuse by users.
