@@ -129,13 +129,11 @@ If you find this project useful, you can buy us a coffee via Github Sponsor! We 
 If you find InstantStyle useful for your research and applications, please cite us using this BibTeX:
 
 ```bibtex
-@misc{wang2024instantstyle,
-      title={InstantStyle: Free Lunch towards Style-Preserving in Text-to-Image Generation}, 
-      author={Haofan Wang and Qixun Wang and Xu Bai and Zekui Qin and Anthony Chen},
-      year={2024},
-      eprint={2404.02733},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+@article{wang2024instantstyle,
+  title={InstantStyle: Free Lunch towards Style-Preserving in Text-to-Image Generation},
+  author={Wang, Haofan and Wang, Qixun and Bai, Xu and Qin, Zekui and Chen, Anthony},
+  journal={arXiv preprint arXiv:2404.02733},
+  year={2024}
 }
 ```
 
