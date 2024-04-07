@@ -60,6 +60,11 @@ Injecting into Style Blocks Only. Empirically, each layer of a deep network capt
 Follow [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter?tab=readme-ov-file#download-models) to download pre-trained checkpoints from [here](https://huggingface.co/h94/IP-Adapter).
 
 ```
+git clone https://github.com/InstantStyle/InstantStyle.git
+cd InstantStyle
+
+# download the models
+git lfs install
 git clone https://huggingface.co/h94/IP-Adapter
 mv IP-Adapter/models models
 mv IP-Adapter/sdxl_models sdxl_models
