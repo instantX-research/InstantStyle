@@ -101,7 +101,7 @@ images = ip_model.generate(pil_image=image,
                             seed=42,
                             #neg_content_prompt="a rabbit",
                             #neg_content_scale=0.5,
-                            )
+                          )
 
 images[0].save("result.png")
 ```
@@ -118,12 +118,11 @@ python app.py #remove spaces import from the function this for GPU Server in Hug
 
 ## TODO
 - Support in diffusers API, check our [PR](https://github.com/huggingface/diffusers/pull/7586).
-- Support stable diffusion 1.5.
 - Support image-based stylization.
 - Support InstantID for face stylization.
 
-## Sponsor Us
-If you find this project useful, you can buy us a coffee via Github Sponsor! We support [Paypal](https://ko-fi.com/instantx) and [WeChat Pay](https://tinyurl.com/instantx-pay).
+## Disclaimer
+Our released codes and checkpoints are for non-commercial research purposes only. Users are granted the freedom to create images using this tool, but they are obligated to comply with local laws and utilize it responsibly. The developers will not assume any responsibility for potential misuse by users.
 
 ## Cite
 If you find InstantStyle useful for your research and applications, please cite us using this BibTeX:
@@ -137,4 +136,4 @@ If you find InstantStyle useful for your research and applications, please cite 
 }
 ```
 
-For any question, please feel free to contact us via haofanwang.ai@gmail.com.
+For any question, feel free to contact us via haofanwang.ai@gmail.com.

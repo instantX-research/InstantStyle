@@ -64,7 +64,7 @@ class MLPProjModel(torch.nn.Module):
 
 
 class IPAdapter:
-    def __init__(self, sd_pipe, image_encoder_path, ip_ckpt, device, num_tokens=4, target_blocks=["blocks"]):
+    def __init__(self, sd_pipe, image_encoder_path, ip_ckpt, device, num_tokens=4, target_blocks=["block"]):
         self.device = device
         self.image_encoder_path = image_encoder_path
         self.ip_ckpt = ip_ckpt
@@ -184,8 +184,7 @@ class IPAdapter:
         seed=None,
         guidance_scale=7.5,
         num_inference_steps=30,
-        neg_content_prompt=None,
-        neg_content_scale=1.0,
+        neg_content_emb=None,
         **kwargs,
     ):
         self.set_scale(scale)
@@ -205,25 +204,8 @@ class IPAdapter:
         if not isinstance(negative_prompt, List):
             negative_prompt = [negative_prompt] * num_prompts
 
-        if neg_content_prompt is not None:
-            with torch.inference_mode():
-                (
-                    prompt_embeds_, # torch.Size([1, 77, 2048])
-                    negative_prompt_embeds_,
-                    pooled_prompt_embeds_, # torch.Size([1, 1280])
-                    negative_pooled_prompt_embeds_,
-                ) = self.pipe.encode_prompt(
-                    neg_content_prompt,
-                    num_images_per_prompt=num_samples,
-                    do_classifier_free_guidance=True,
-                    negative_prompt=negative_prompt,
-                )
-                pooled_prompt_embeds_ *= neg_content_scale
-        else:
-            pooled_prompt_embeds_ = None
-
         image_prompt_embeds, uncond_image_prompt_embeds = self.get_image_embeds(
-            pil_image=pil_image, clip_image_embeds=clip_image_embeds, content_prompt_embeds=pooled_prompt_embeds_
+            pil_image=pil_image, clip_image_embeds=clip_image_embeds, content_prompt_embeds=neg_content_emb
         )
         bs_embed, seq_len, _ = image_prompt_embeds.shape
         image_prompt_embeds = image_prompt_embeds.repeat(1, num_samples, 1)
@@ -268,6 +250,7 @@ class IPAdapterXL(IPAdapter):
         num_samples=4,
         seed=None,
         num_inference_steps=30,
+        neg_content_emb=None,
         neg_content_prompt=None,
         neg_content_scale=1.0,
         **kwargs,
@@ -285,21 +268,24 @@ class IPAdapterXL(IPAdapter):
             prompt = [prompt] * num_prompts
         if not isinstance(negative_prompt, List):
             negative_prompt = [negative_prompt] * num_prompts
-
-        if neg_content_prompt is not None:
-            with torch.inference_mode():
-                (
-                    prompt_embeds_, # torch.Size([1, 77, 2048])
-                    negative_prompt_embeds_,
-                    pooled_prompt_embeds_, # torch.Size([1, 1280])
-                    negative_pooled_prompt_embeds_,
-                ) = self.pipe.encode_prompt(
-                    neg_content_prompt,
-                    num_images_per_prompt=num_samples,
-                    do_classifier_free_guidance=True,
-                    negative_prompt=negative_prompt,
-                )
-                pooled_prompt_embeds_ *= neg_content_scale
+        
+        if neg_content_emb is None:
+            if neg_content_prompt is not None:
+                with torch.inference_mode():
+                    (
+                        prompt_embeds_, # torch.Size([1, 77, 2048])
+                        negative_prompt_embeds_,
+                        pooled_prompt_embeds_, # torch.Size([1, 1280])
+                        negative_pooled_prompt_embeds_,
+                    ) = self.pipe.encode_prompt(
+                        neg_content_prompt,
+                        num_images_per_prompt=num_samples,
+                        do_classifier_free_guidance=True,
+                        negative_prompt=negative_prompt,
+                    )
+                    pooled_prompt_embeds_ *= neg_content_scale
+            else:
+                pooled_prompt_embeds_ = neg_content_emb
         else:
             pooled_prompt_embeds_ = None
 
