@@ -94,7 +94,7 @@ pipe = StableDiffusionXLPipeline.from_pretrained(
 )
 
 # load ip-adapter
-# target_blocks=["blocks"] for original IP-Adapter
+# target_blocks=["block"] for original IP-Adapter
 # target_blocks=["up_blocks.0.attentions.1"] for style blocks only
 # target_blocks = ["up_blocks.0.attentions.1", "down_blocks.2.attentions.1"] # for style+layout blocks
 ip_model = IPAdapterXL(pipe, image_encoder_path, ip_ckpt, device, target_blocks=["up_blocks.0.attentions.1"])
@@ -128,7 +128,8 @@ python app.py #remove spaces import from the function this for GPU Server in Hug
 ```
 
 ## Resources
-- ComfyUI Support: https://github.com/cubiq/ComfyUI_IPAdapter_plus
+- [InstantStyle for ComfyUI](https://github.com/cubiq/ComfyUI_IPAdapter_plus)
+- [InstantID](https://github.com/InstantID/InstantID)
 
 ## TODO
 - Support in diffusers API, check our [PR](https://github.com/huggingface/diffusers/pull/7586).
@@ -136,6 +137,9 @@ python app.py #remove spaces import from the function this for GPU Server in Hug
 
 ## Disclaimer
 Our released codes and checkpoints are for non-commercial research purposes only. Users are granted the freedom to create images using this tool, but they are obligated to comply with local laws and utilize it responsibly. The developers will not assume any responsibility for potential misuse by users.
+
+## Acknowledgements
+InstantStyle is developed by the InstantX team and is highly built on [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter), which has been unfairly compared by many other works. We at InstantStyle make IP-Adapter great again. Additionally, we acknowledge [Hu Ye](https://github.com/xiaohu2015) for his valuable discussion.
 
 ## Star History
 [![Star History Chart](https://api.star-history.com/svg?repos=InstantStyle/InstantStyle&type=Date)](https://star-history.com/#InstantStyle/InstantStyle&Date)
