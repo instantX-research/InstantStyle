@@ -137,6 +137,9 @@ python app.py #remove spaces import from the function this for GPU Server in Hug
 ## Disclaimer
 Our released codes and checkpoints are for non-commercial research purposes only. Users are granted the freedom to create images using this tool, but they are obligated to comply with local laws and utilize it responsibly. The developers will not assume any responsibility for potential misuse by users.
 
+## Star History
+[![Star History Chart](https://api.star-history.com/svg?repos=InstantStyle/InstantStyle&type=Date)](https://star-history.com/#InstantStyle/InstantStyle&Date)
+
 ## Cite
 If you find InstantStyle useful for your research and applications, please cite us using this BibTeX:
 
