@@ -59,6 +59,12 @@ Injecting into Style Blocks Only. Empirically, each layer of a deep network capt
 ## Download
 Follow [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter?tab=readme-ov-file#download-models) to download pre-trained checkpoints from [here](https://huggingface.co/h94/IP-Adapter).
 
+```
+git clone https://huggingface.co/h94/IP-Adapter
+mv IP-Adapter/models models
+mv IP-Adapter/sdxl_models sdxl_models
+```
+
 ## Usage
 
 Our method is fully compatible with [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter). For feature subtraction, it only works for global feature instead of patch features. For SD1.5, you can find a demo at [infer_style_sd15.py](https://github.com/InstantStyle/InstantStyle/blob/main/infer_style_sd15.py), but we find that SD1.5 has weaker perception and understanding of style information, thus this demo is experimental only. All block names can be found in [attn_blocks.py](https://github.com/InstantStyle/InstantStyle/blob/main/attn_blocks.py) and [attn_blocks_sd15.py](https://github.com/InstantStyle/InstantStyle/blob/main/attn_blocks_sd15.py) for SDXL and SD1.5 respectively.
@@ -107,6 +113,7 @@ images = ip_model.generate(pil_image=image,
 
 images[0].save("result.png")
 ```
+
 ## Gradio Demo
 ```
 git clone https://github.com/InstantStyle/InstantStyle.git
