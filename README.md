@@ -110,7 +110,7 @@ images[0].save("result.png")
 git clone https://github.com/InstantStyle/InstantStyle.git
 cd ./InstantStyle/gradio_demo/
 pip install -r requirements.txt
-python app.py #remove spaces import from the fucntion this for GPU Server in Huggingface ()
+python app.py #remove spaces import from the function this for GPU Server in Huggingface ()
 ```
 
 ## Resources
