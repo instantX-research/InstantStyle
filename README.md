@@ -95,6 +95,9 @@ pipe = StableDiffusionXLPipeline.from_pretrained(
     add_watermarker=False,
 )
 
+# reduce memory consumption
+pipe.enable_vae_tiling()
+
 # load ip-adapter
 # target_blocks=["block"] for original IP-Adapter
 # target_blocks=["up_blocks.0.attentions.1"] for style blocks only
