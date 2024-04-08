@@ -105,7 +105,7 @@ class LoRAIPAttnProcessor(nn.Module):
     """
 
     def __init__(self, hidden_size, cross_attention_dim=None, rank=4, network_alpha=None, lora_scale=1.0, scale=1.0,
-                 num_tokens=4):
+                 num_tokens=4, skip=False):
         super().__init__()
 
         self.rank = rank
@@ -120,6 +120,7 @@ class LoRAIPAttnProcessor(nn.Module):
         self.cross_attention_dim = cross_attention_dim
         self.scale = scale
         self.num_tokens = num_tokens
+        self.skip = skip
 
         self.to_k_ip = nn.Linear(cross_attention_dim or hidden_size, hidden_size, bias=False)
         self.to_v_ip = nn.Linear(cross_attention_dim or hidden_size, hidden_size, bias=False)
@@ -175,6 +176,21 @@ class LoRAIPAttnProcessor(nn.Module):
         attention_probs = attn.get_attention_scores(query, key, attention_mask)
         hidden_states = torch.bmm(attention_probs, value)
         hidden_states = attn.batch_to_head_dim(hidden_states)
+
+        if not self.skip:
+            # for ip-adapter
+            ip_key = self.to_k_ip(ip_hidden_states)
+            ip_value = self.to_v_ip(ip_hidden_states)
+
+            ip_key = attn.head_to_batch_dim(ip_key)
+            ip_value = attn.head_to_batch_dim(ip_value)
+
+            ip_attention_probs = attn.get_attention_scores(query, ip_key, None)
+            self.attn_map = ip_attention_probs
+            ip_hidden_states = torch.bmm(ip_attention_probs, ip_value)
+            ip_hidden_states = attn.batch_to_head_dim(ip_hidden_states)
+
+            hidden_states = hidden_states + self.scale * ip_hidden_states
 
         # for ip-adapter
         ip_key = self.to_k_ip(ip_hidden_states)
@@ -315,12 +331,13 @@ class LoRAIPAttnProcessor2_0(nn.Module):
     """
 
     def __init__(self, hidden_size, cross_attention_dim=None, rank=4, network_alpha=None, lora_scale=1.0, scale=1.0,
-                 num_tokens=4):
+                 num_tokens=4, skip=False):
         super().__init__()
 
         self.rank = rank
         self.lora_scale = lora_scale
         self.num_tokens = num_tokens
+        self.skip = skip
 
         self.to_q_lora = LoRALinearLayer(hidden_size, hidden_size, rank, network_alpha)
         self.to_k_lora = LoRALinearLayer(cross_attention_dim or hidden_size, hidden_size, rank, network_alpha)
@@ -391,6 +408,28 @@ class LoRAIPAttnProcessor2_0(nn.Module):
 
         hidden_states = hidden_states.transpose(1, 2).reshape(batch_size, -1, attn.heads * head_dim)
         hidden_states = hidden_states.to(query.dtype)
+
+        if not self.skip:
+            # for ip-adapter
+            ip_key = self.to_k_ip(ip_hidden_states)
+            ip_value = self.to_v_ip(ip_hidden_states)
+
+            ip_key = ip_key.view(batch_size, -1, attn.heads, head_dim).transpose(1, 2)
+            ip_value = ip_value.view(batch_size, -1, attn.heads, head_dim).transpose(1, 2)
+
+            # the output of sdp = (batch, num_heads, seq_len, head_dim)
+            # TODO: add support for attn.scale when we move to Torch 2.1
+            ip_hidden_states = F.scaled_dot_product_attention(
+                query, ip_key, ip_value, attn_mask=None, dropout_p=0.0, is_causal=False
+            )
+            with torch.no_grad():
+                self.attn_map = query @ ip_key.transpose(-2, -1).softmax(dim=-1)
+                #print(self.attn_map.shape)
+
+            ip_hidden_states = ip_hidden_states.transpose(1, 2).reshape(batch_size, -1, attn.heads * head_dim)
+            ip_hidden_states = ip_hidden_states.to(query.dtype)
+
+            hidden_states = hidden_states + self.scale * ip_hidden_states
 
         # for ip
         ip_key = self.to_k_ip(ip_hidden_states)
