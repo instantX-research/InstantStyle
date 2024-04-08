@@ -1,7 +1,7 @@
 <div align="center">
 <h1>InstantStyle: Free Lunch towards Style-Preserving in Text-to-Image Generation</h1>
 
-[**Haofan Wang**](https://haofanwang.github.io/)<sup>*</sup> · [**Qixun Wang**](https://github.com/wangqixun) · [**Xu Bai**](https://huggingface.co/baymin0220) · [**Zekui Qin**](https://github.com/ZekuiQin) · [**Anthony Chen**](https://antonioo-c.github.io/)
+[**Haofan Wang**](https://haofanwang.github.io/)<sup>*</sup> · [**Matteo Spinelli**](https://github.com/cubiq) · [**Qixun Wang**](https://github.com/wangqixun) · [**Xu Bai**](https://huggingface.co/baymin0220) · [**Zekui Qin**](https://github.com/ZekuiQin) · [**Anthony Chen**](https://antonioo-c.github.io/)
 
 InstantX Team 
 
@@ -9,6 +9,7 @@ InstantX Team
 
 <a href='[https://instantid.github.io/](https://instantstyle.github.io/)'><img src='https://img.shields.io/badge/Project-Page-green'></a>
 <a href='https://arxiv.org/abs/2404.02733'><img src='https://img.shields.io/badge/Technique-Report-red'></a>
+[![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Space-red)](https://huggingface.co/spaces/ameerazam08/InstantStyle-GPU-Demo)
 [![GitHub](https://img.shields.io/github/stars/InstantStyle/InstantStyle?style=social)](https://github.com/InstantStyle/InstantStyle)
 
 </div>
@@ -30,10 +31,11 @@ Injecting into Style Blocks Only. Empirically, each layer of a deep network capt
 </p>
 
 ## Release
+- [2024/04/08] 🔥 InstantStyle is supported in [AnyV2V](https://tiger-ai-lab.github.io/AnyV2V/) for stylized video-to-video editing, demo can be found [here](https://twitter.com/vinesmsuic/status/1777170927500787782).
+- [2024/04/07] 🔥 We support image-based stylization, more information can be found [here](https://github.com/InstantStyle/InstantStyle/blob/main/infer_style_controlnet.py).
+- [2024/04/07] 🔥 We support an experimental version for SD1.5, more information can be found [here](https://github.com/InstantStyle/InstantStyle/blob/main/infer_style_sd15.py).
+- [2024/04/03] 🔥 InstantStyle is supported in [ComfyUI_IPAdapter_plus](https://github.com/cubiq/ComfyUI_IPAdapter_plus) developed by our co-author.
 - [2024/04/03] 🔥 We release the [technical report](https://arxiv.org/abs/2404.02733).
-
-## Download
-Follow [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter?tab=readme-ov-file#download-models) to download pre-trained checkpoints.
 
 ## Demos
 
@@ -56,9 +58,23 @@ Follow [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter?tab=readme-ov-fi
   <img src="assets/comparison.png">
 </p>
 
+## Download
+Follow [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter?tab=readme-ov-file#download-models) to download pre-trained checkpoints from [here](https://huggingface.co/h94/IP-Adapter).
+
+```
+git clone https://github.com/InstantStyle/InstantStyle.git
+cd InstantStyle
+
+# download the models
+git lfs install
+git clone https://huggingface.co/h94/IP-Adapter
+mv IP-Adapter/models models
+mv IP-Adapter/sdxl_models sdxl_models
+```
+
 ## Usage
 
-Our method is fully compatible with [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter). But for feature subtraction, it only works with IP-Adapter using global embeddings.
+Our method is fully compatible with [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter). For feature subtraction, it only works for global feature instead of patch features. For SD1.5, you can find a demo at [infer_style_sd15.py](https://github.com/InstantStyle/InstantStyle/blob/main/infer_style_sd15.py), but we find that SD1.5 has weaker perception and understanding of style information, thus this demo is experimental only. All block names can be found in [attn_blocks.py](https://github.com/InstantStyle/InstantStyle/blob/main/attn_blocks.py) and [attn_blocks_sd15.py](https://github.com/InstantStyle/InstantStyle/blob/main/attn_blocks_sd15.py) for SDXL and SD1.5 respectively.
 
 ```python
 import torch
@@ -80,7 +96,7 @@ pipe = StableDiffusionXLPipeline.from_pretrained(
 )
 
 # load ip-adapter
-# target_blocks=["blocks"] for original IP-Adapter
+# target_blocks=["block"] for original IP-Adapter
 # target_blocks=["up_blocks.0.attentions.1"] for style blocks only
 # target_blocks = ["up_blocks.0.attentions.1", "down_blocks.2.attentions.1"] # for style+layout blocks
 ip_model = IPAdapterXL(pipe, image_encoder_path, ip_ckpt, device, target_blocks=["up_blocks.0.attentions.1"])
@@ -100,32 +116,46 @@ images = ip_model.generate(pil_image=image,
                             seed=42,
                             #neg_content_prompt="a rabbit",
                             #neg_content_scale=0.5,
-                            )
+                          )
 
 images[0].save("result.png")
 ```
 
-We will support diffusers API soon.
+## Gradio Demo
+```
+git clone https://github.com/InstantStyle/InstantStyle.git
+cd ./InstantStyle/gradio_demo/
+pip install -r requirements.txt
+python app.py #remove spaces import from the function this for GPU Server in Huggingface ()
+```
+
+## Resources
+- [InstantStyle for ComfyUI](https://github.com/cubiq/ComfyUI_IPAdapter_plus)
+- [InstantID](https://github.com/InstantID/InstantID)
 
 ## TODO
-- Support in diffusers API.
-- Support InstantID.
+- Support in diffusers API, check our [PR](https://github.com/huggingface/diffusers/pull/7586).
+- Support InstantID for face stylization once stars reach 1K.
 
-## Sponsor Us
-If you find this project useful, you can buy us a coffee via Github Sponsor! We support [Paypal](https://ko-fi.com/instantx) and [WeChat Pay](https://tinyurl.com/instantx-pay).
+## Disclaimer
+Our released codes and checkpoints are for non-commercial research purposes only. Users are granted the freedom to create images using this tool, but they are obligated to comply with local laws and utilize it responsibly. The developers will not assume any responsibility for potential misuse by users.
+
+## Acknowledgements
+InstantStyle is developed by the InstantX team and is highly built on [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter), which has been unfairly compared by many other works. We at InstantStyle make IP-Adapter great again. Additionally, we acknowledge [Hu Ye](https://github.com/xiaohu2015) for his valuable discussion.
+
+## Star History
+[![Star History Chart](https://api.star-history.com/svg?repos=InstantStyle/InstantStyle&type=Date)](https://star-history.com/#InstantStyle/InstantStyle&Date)
 
 ## Cite
 If you find InstantStyle useful for your research and applications, please cite us using this BibTeX:
 
 ```bibtex
-@misc{wang2024instantstyle,
-      title={InstantStyle: Free Lunch towards Style-Preserving in Text-to-Image Generation}, 
-      author={Haofan Wang and Qixun Wang and Xu Bai and Zekui Qin and Anthony Chen},
-      year={2024},
-      eprint={2404.02733},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+@article{wang2024instantstyle,
+  title={InstantStyle: Free Lunch towards Style-Preserving in Text-to-Image Generation},
+  author={Wang, Haofan and Wang, Qixun and Bai, Xu and Qin, Zekui and Chen, Anthony},
+  journal={arXiv preprint arXiv:2404.02733},
+  year={2024}
 }
 ```
 
-For any question, please feel free to contact us via haofanwang.ai@gmail.com.
+For any question, feel free to contact us via haofanwang.ai@gmail.com.

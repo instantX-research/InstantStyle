@@ -1,0 +1,6 @@
+transformers
+diffusers
+torch
+accelerate
+gradio
+einops
