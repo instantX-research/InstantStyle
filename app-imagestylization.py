@@ -85,7 +85,7 @@ with block:
                 scale = gr.Slider(minimum=0,maximum=2.0, step=0.01,value=1.0, label="scale")
                 control_scale = gr.Slider(minimum=0,maximum=1.0, step=0.01,value=0.6, label="controlnet conditioning scale")
                 guidance_scale = gr.Slider(minimum=1,maximum=15.0, step=0.01,value=5.0, label="guidance scale")
-                num_samples= gr.Slider(minimum=1,maximum=16.0, step=1.0,value=1.0, label="num samples")
+                num_samples= gr.Slider(minimum=1,maximum=4.0, step=1.0,value=1.0, label="num samples")
                 num_inference_steps = gr.Slider(minimum=5,maximum=50.0, step=1.0,value=30, label="num inference steps")
                 seed = gr.Slider(minimum=-1000000,maximum=1000000,value=1, step=1, label="Seed Value")
                 generate_button = gr.Button("Generate Image")
