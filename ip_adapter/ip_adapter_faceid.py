@@ -9,8 +9,7 @@ from safetensors import safe_open
 from transformers import CLIPImageProcessor, CLIPVisionModelWithProjection
 from .utils import is_torch2_available, get_generator
 
-
-USE_DAFAULT_ATTN = False # should be True for visualization_attnmap
+USE_DAFAULT_ATTN = False  # should be True for visualization_attnmap
 if is_torch2_available() and (not USE_DAFAULT_ATTN):
     from .attention_processor_faceid import (
         LoRAAttnProcessor2_0 as LoRAAttnProcessor,
@@ -114,6 +113,7 @@ class ProjPlusModel(torch.nn.Module):
             out = x + scale * out
         return out
 
+
 class ImageProjModel(torch.nn.Module):
     """Projection Model"""
 
@@ -136,25 +136,29 @@ class ImageProjModel(torch.nn.Module):
 
 
 class MLPProjModel(torch.nn.Module):
-    """SD model with image prompt"""
-
-    def __init__(self, cross_attention_dim=1024, clip_embeddings_dim=1024):
+    def __init__(self, cross_attention_dim=768, id_embeddings_dim=512, num_tokens=4):
         super().__init__()
 
-        self.proj = torch.nn.Sequential(
-            torch.nn.Linear(clip_embeddings_dim, clip_embeddings_dim),
-            torch.nn.GELU(),
-            torch.nn.Linear(clip_embeddings_dim, cross_attention_dim),
-            torch.nn.LayerNorm(cross_attention_dim)
-        )
+        self.cross_attention_dim = cross_attention_dim
+        self.num_tokens = num_tokens
 
-    def forward(self, image_embeds):
-        clip_extra_context_tokens = self.proj(image_embeds)
-        return clip_extra_context_tokens
+        self.proj = torch.nn.Sequential(
+            torch.nn.Linear(id_embeddings_dim, id_embeddings_dim * 2),
+            torch.nn.GELU(),
+            torch.nn.Linear(id_embeddings_dim * 2, cross_attention_dim * num_tokens),
+        )
+        self.norm = torch.nn.LayerNorm(cross_attention_dim)
+
+    def forward(self, id_embeds):
+        x = self.proj(id_embeds)
+        x = x.reshape(-1, self.num_tokens, self.cross_attention_dim)
+        x = self.norm(x)
+        return x
 
 
 class IPAdapterFaceID:
-    def __init__(self, sd_pipe, ip_ckpt, device, lora_rank=128, num_tokens=4,  target_blocks=["blocks"], torch_dtype=torch.float16):
+    def __init__(self, sd_pipe, ip_ckpt, device, lora_rank=128, num_tokens=4, target_blocks=["blocks"],
+                 torch_dtype=torch.float16):
         self.device = device
         self.ip_ckpt = ip_ckpt
         self.lora_rank = lora_rank
@@ -165,7 +169,6 @@ class IPAdapterFaceID:
         self.pipe = sd_pipe.to(self.device)
         self.set_ip_adapter()
 
-
         # image proj model
         self.image_proj_model = self.init_proj()
 
@@ -174,7 +177,7 @@ class IPAdapterFaceID:
     def init_proj(self):
         image_proj_model = MLPProjModel(
             cross_attention_dim=self.pipe.unet.config.cross_attention_dim,
-            clip_embeddings_dim=512,
+            id_embeddings_dim=512,
             num_tokens=self.num_tokens,
         ).to(self.device, dtype=self.torch_dtype)
         return image_proj_model
@@ -204,7 +207,8 @@ class IPAdapterFaceID:
                         break
                 if selected:
                     attn_procs[name] = LoRAIPAttnProcessor(
-                        hidden_size=hidden_size, cross_attention_dim=cross_attention_dim, scale=1.0, rank=self.lora_rank,
+                        hidden_size=hidden_size, cross_attention_dim=cross_attention_dim, scale=1.0,
+                        rank=self.lora_rank,
                         num_tokens=self.num_tokens,
                     ).to(self.device, dtype=self.torch_dtype)
                 else:
@@ -325,18 +329,18 @@ class IPAdapterFaceIDXL(IPAdapterFaceID):
     """SDXL"""
 
     def generate(
-        self,
-        faceid_embeds=None,
-        prompt=None,
-        negative_prompt=None,
-        scale=1.0,
-        num_samples=4,
-        seed=None,
-        num_inference_steps=30,
-        neg_content_emb=None,
-        neg_content_prompt=None,
-        neg_content_scale=1.0,
-        **kwargs,
+            self,
+            faceid_embeds=None,
+            prompt=None,
+            negative_prompt=None,
+            scale=1.0,
+            num_samples=4,
+            seed=None,
+            num_inference_steps=30,
+            neg_content_emb=None,
+            neg_content_prompt=None,
+            neg_content_scale=1.0,
+            **kwargs,
     ):
         self.set_scale(scale)
 
@@ -371,7 +375,8 @@ class IPAdapterFaceIDXL(IPAdapterFaceID):
                 pooled_prompt_embeds_ = neg_content_emb
         else:
             pooled_prompt_embeds_ = None
-        image_prompt_embeds, uncond_image_prompt_embeds = self.get_image_embeds(faceid_embeds, content_prompt_embeds=pooled_prompt_embeds_)
+        image_prompt_embeds, uncond_image_prompt_embeds = self.get_image_embeds(faceid_embeds,
+                                                                                content_prompt_embeds=pooled_prompt_embeds_)
 
         bs_embed, seq_len, _ = image_prompt_embeds.shape
         image_prompt_embeds = image_prompt_embeds.repeat(1, num_samples, 1)
@@ -409,16 +414,93 @@ class IPAdapterFaceIDXL(IPAdapterFaceID):
         return images
 
 
-class IPAdapterFull(IPAdapterPlus):
-    """IP-Adapter with full features"""
+class IPAdapterFaceIDXL(IPAdapterFaceID):
+    """SDXL"""
 
-    def init_proj(self):
-        image_proj_model = MLPProjModel(
-            cross_attention_dim=self.pipe.unet.config.cross_attention_dim,
-            clip_embeddings_dim=self.image_encoder.config.hidden_size,
-        ).to(self.device, dtype=torch.float16)
-        return image_proj_model
+    def generate(
+            self,
+            faceid_embeds=None,
+            prompt=None,
+            negative_prompt=None,
+            scale=1.0,
+            num_samples=4,
+            seed=None,
+            num_inference_steps=30,
+            neg_content_emb=None,
+            neg_content_prompt=None,
+            neg_content_scale=1.0,
+            **kwargs,
+    ):
+        self.set_scale(scale)
 
+        num_prompts = faceid_embeds.size(0)
+
+        if prompt is None:
+            prompt = "best quality, high quality"
+        if negative_prompt is None:
+            negative_prompt = "monochrome, lowres, bad anatomy, worst quality, low quality"
+
+        if not isinstance(prompt, List):
+            prompt = [prompt] * num_prompts
+        if not isinstance(negative_prompt, List):
+            negative_prompt = [negative_prompt] * num_prompts
+
+        if neg_content_emb is None:
+            if neg_content_prompt is not None:
+                with torch.inference_mode():
+                    (
+                        prompt_embeds_,  # torch.Size([1, 77, 2048])
+                        negative_prompt_embeds_,
+                        pooled_prompt_embeds_,  # torch.Size([1, 1280])
+                        negative_pooled_prompt_embeds_,
+                    ) = self.pipe.encode_prompt(
+                        neg_content_prompt,
+                        num_images_per_prompt=num_samples,
+                        do_classifier_free_guidance=True,
+                        negative_prompt=negative_prompt,
+                    )
+                    pooled_prompt_embeds_ *= neg_content_scale
+            else:
+                pooled_prompt_embeds_ = neg_content_emb
+        else:
+            pooled_prompt_embeds_ = None
+        image_prompt_embeds, uncond_image_prompt_embeds = self.get_image_embeds(faceid_embeds,
+                                                                                content_prompt_embeds=pooled_prompt_embeds_)
+
+        bs_embed, seq_len, _ = image_prompt_embeds.shape
+        image_prompt_embeds = image_prompt_embeds.repeat(1, num_samples, 1)
+        image_prompt_embeds = image_prompt_embeds.view(bs_embed * num_samples, seq_len, -1)
+        uncond_image_prompt_embeds = uncond_image_prompt_embeds.repeat(1, num_samples, 1)
+        uncond_image_prompt_embeds = uncond_image_prompt_embeds.view(bs_embed * num_samples, seq_len, -1)
+
+        with torch.inference_mode():
+            (
+                prompt_embeds,
+                negative_prompt_embeds,
+                pooled_prompt_embeds,
+                negative_pooled_prompt_embeds,
+            ) = self.pipe.encode_prompt(
+                prompt,
+                num_images_per_prompt=num_samples,
+                do_classifier_free_guidance=True,
+                negative_prompt=negative_prompt,
+            )
+            prompt_embeds = torch.cat([prompt_embeds, image_prompt_embeds], dim=1)
+            negative_prompt_embeds = torch.cat([negative_prompt_embeds, uncond_image_prompt_embeds], dim=1)
+
+        generator = get_generator(seed, self.device)
+
+        images = self.pipe(
+            prompt_embeds=prompt_embeds,
+            negative_prompt_embeds=negative_prompt_embeds,
+            pooled_prompt_embeds=pooled_prompt_embeds,
+            negative_pooled_prompt_embeds=negative_pooled_prompt_embeds,
+            num_inference_steps=num_inference_steps,
+            generator=generator,
+            **kwargs,
+        ).images
+
+        return images
 
 class IPAdapterPlusXL(IPAdapter):
     """SDXL"""
