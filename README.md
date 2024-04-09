@@ -31,6 +31,7 @@ Injecting into Style Blocks Only. Empirically, each layer of a deep network capt
 </p>
 
 ## Release
+- [2024/04/09] 🔥 We support SDXL-inpainting, more information can be found [here](https://github.com/InstantStyle/InstantStyle/blob/main/infer_style_inpainting.py).
 - [2024/04/08] 🔥 InstantStyle is supported in [AnyV2V](https://tiger-ai-lab.github.io/AnyV2V/) for stylized video-to-video editing, demo can be found [here](https://twitter.com/vinesmsuic/status/1777170927500787782).
 - [2024/04/07] 🔥 We support image-based stylization, more information can be found [here](https://github.com/InstantStyle/InstantStyle/blob/main/infer_style_controlnet.py).
 - [2024/04/07] 🔥 We support an experimental version for SD1.5, more information can be found [here](https://github.com/InstantStyle/InstantStyle/blob/main/infer_style_sd15.py).
