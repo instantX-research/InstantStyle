@@ -510,7 +510,6 @@ class IPAdapterFaceIDPlus:
             s_scale=1.0,
             shortcut=False,
             **kwargs,
-
     ):
         self.set_scale(scale)
 
@@ -558,5 +557,4 @@ class IPAdapterFaceIDPlus:
         ).images
 
         return images
-
 
