@@ -192,19 +192,6 @@ class LoRAIPAttnProcessor(nn.Module):
 
             hidden_states = hidden_states + self.scale * ip_hidden_states
 
-        # for ip-adapter
-        ip_key = self.to_k_ip(ip_hidden_states)
-        ip_value = self.to_v_ip(ip_hidden_states)
-
-        ip_key = attn.head_to_batch_dim(ip_key)
-        ip_value = attn.head_to_batch_dim(ip_value)
-
-        ip_attention_probs = attn.get_attention_scores(query, ip_key, None)
-        self.attn_map = ip_attention_probs
-        ip_hidden_states = torch.bmm(ip_attention_probs, ip_value)
-        ip_hidden_states = attn.batch_to_head_dim(ip_hidden_states)
-
-        hidden_states = hidden_states + self.scale * ip_hidden_states
 
         # linear proj
         hidden_states = attn.to_out[0](hidden_states) + self.lora_scale * self.to_out_lora(hidden_states)
