@@ -15,6 +15,7 @@ pipe = StableDiffusionPipeline.from_pretrained(
     torch_dtype=torch.float16,
 )
 pipe.scheduler = UniPCMultistepScheduler.from_config(pipe.scheduler.config)
+pipe.enable_vae_tiling()
 
 # load ip-adapter
 # target_blocks=["block"] for original IP-Adapter

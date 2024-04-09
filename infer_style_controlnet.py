@@ -21,6 +21,7 @@ pipe = StableDiffusionXLControlNetPipeline.from_pretrained(
     torch_dtype=torch.float16,
     add_watermarker=False,
 )
+pipe.enable_vae_tiling()
 
 # load ip-adapter
 # target_blocks=["block"] for original IP-Adapter
