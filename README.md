@@ -126,12 +126,13 @@ images = ip_model.generate(pil_image=image,
 images[0].save("result.png")
 ```
 
-## Gradio Demo
+## Start a local gradio demo <a href='https://github.com/gradio-app/gradio'><img src='https://img.shields.io/github/stars/gradio-app/gradio'></a>
+Run the following command:
 ```
 git clone https://github.com/InstantStyle/InstantStyle.git
 cd ./InstantStyle/gradio_demo/
 pip install -r requirements.txt
-python app.py #remove spaces import from the function this for GPU Server in Huggingface ()
+python app.py
 ```
 
 ## Resources
