@@ -128,6 +128,20 @@ images = ip_model.generate(pil_image=image,
 images[0].save("result.png")
 ```
 
+## Distributed Inference
+On distributed setups, you can run inference across multiple GPUs with 🤗 Accelerate or PyTorch Distributed, which is useful for generating with multiple prompts in parallel, in case you have limited VRAM on each GPU. More information can be found [here](https://huggingface.co/docs/diffusers/main/en/training/distributed_inference#device-placement). Make sure you have installed diffusers from the source and the lastest accelerate.
+
+```
+max_memory = {0:"10GB", 1:"10GB"}
+pipe = StableDiffusionXLPipeline.from_pretrained(
+    base_model_path,
+    torch_dtype=torch.float16,
+    add_watermarker=False,
+    device_map="balanced",
+    max_memory=max_memory
+)
+```
+
 ## Start a local gradio demo <a href='https://github.com/gradio-app/gradio'><img src='https://img.shields.io/github/stars/gradio-app/gradio'></a>
 Run the following command:
 ```
