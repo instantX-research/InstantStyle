@@ -113,21 +113,13 @@ class IPAdapter:
                     if block_name in name:
                         selected = True
                         break
-                if selected:
-                    attn_procs[name] = IPAttnProcessor(
-                        hidden_size=hidden_size,
-                        cross_attention_dim=cross_attention_dim,
-                        scale=1.0,
-                        num_tokens=self.num_tokens,
-                    ).to(self.device, dtype=torch.float16)
-                else:
-                    attn_procs[name] = IPAttnProcessor(
-                        hidden_size=hidden_size,
-                        cross_attention_dim=cross_attention_dim,
-                        scale=1.0,
-                        num_tokens=self.num_tokens,
-                        skip=True
-                    ).to(self.device, dtype=torch.float16)
+                attn_procs[name] = IPAttnProcessor(
+                    hidden_size=hidden_size,
+                    cross_attention_dim=cross_attention_dim,
+                    scale=1.0,
+                    num_tokens=self.num_tokens,
+                    selected=selected
+                ).to(self.device, dtype=torch.float16)
         unet.set_attn_processor(attn_procs)
         if hasattr(self.pipe, "controlnet"):
             if isinstance(self.pipe.controlnet, MultiControlNetModel):

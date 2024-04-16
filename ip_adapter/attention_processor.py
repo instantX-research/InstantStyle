@@ -91,14 +91,14 @@ class IPAttnProcessor(nn.Module):
             The context length of the image features.
     """
 
-    def __init__(self, hidden_size, cross_attention_dim=None, scale=1.0, num_tokens=4, skip=False):
+    def __init__(self, hidden_size, cross_attention_dim=None, scale=1.0, num_tokens=4, selected=True):
         super().__init__()
 
         self.hidden_size = hidden_size
         self.cross_attention_dim = cross_attention_dim
         self.scale = scale
         self.num_tokens = num_tokens
-        self.skip = skip
+        self.selected = selected
 
         self.to_k_ip = nn.Linear(cross_attention_dim or hidden_size, hidden_size, bias=False)
         self.to_v_ip = nn.Linear(cross_attention_dim or hidden_size, hidden_size, bias=False)
@@ -155,7 +155,7 @@ class IPAttnProcessor(nn.Module):
         hidden_states = torch.bmm(attention_probs, value)
         hidden_states = attn.batch_to_head_dim(hidden_states)
 
-        if not self.skip:
+        if self.selected:
             # for ip-adapter
             ip_key = self.to_k_ip(ip_hidden_states)
             ip_value = self.to_v_ip(ip_hidden_states)
@@ -289,7 +289,7 @@ class IPAttnProcessor2_0(torch.nn.Module):
             The context length of the image features.
     """
 
-    def __init__(self, hidden_size, cross_attention_dim=None, scale=1.0, num_tokens=4, skip=False):
+    def __init__(self, hidden_size, cross_attention_dim=None, scale=1.0, num_tokens=4, selected=True):
         super().__init__()
 
         if not hasattr(F, "scaled_dot_product_attention"):
@@ -299,7 +299,7 @@ class IPAttnProcessor2_0(torch.nn.Module):
         self.cross_attention_dim = cross_attention_dim
         self.scale = scale
         self.num_tokens = num_tokens
-        self.skip = skip
+        self.selected = selected
 
         self.to_k_ip = nn.Linear(cross_attention_dim or hidden_size, hidden_size, bias=False)
         self.to_v_ip = nn.Linear(cross_attention_dim or hidden_size, hidden_size, bias=False)
@@ -370,7 +370,7 @@ class IPAttnProcessor2_0(torch.nn.Module):
         hidden_states = hidden_states.transpose(1, 2).reshape(batch_size, -1, attn.heads * head_dim)
         hidden_states = hidden_states.to(query.dtype)
 
-        if not self.skip:
+        if self.selected:
             # for ip-adapter
             ip_key = self.to_k_ip(ip_hidden_states)
             ip_value = self.to_v_ip(ip_hidden_states)
