@@ -32,6 +32,7 @@ Injecting into Style Blocks Only. Empirically, each layer of a deep network capt
 </p>
 
 ## Release
+- [2024/04/23] 🔥 InstantStyle has been natively supported in diffusers, more information can be found [here](https://github.com/huggingface/diffusers/pull/7668).
 - [2024/04/20] 🔥 InstantStyle is supported in [Mikubill/sd-webui-controlnet](https://github.com/Mikubill/sd-webui-controlnet/discussions/2770).
 - [2024/04/11] 🔥 We add the experimental distributed inference feature. Check it [here](https://github.com/InstantStyle/InstantStyle?tab=readme-ov-file#distributed-inference).
 - [2024/04/10] 🔥 We support an [online demo](https://modelscope.cn/studios/instantx/InstantStyle/summary) on ModelScope.
@@ -156,10 +157,6 @@ python app.py
 ## Resources
 - [InstantStyle for ComfyUI](https://github.com/cubiq/ComfyUI_IPAdapter_plus)
 - [InstantID](https://github.com/InstantID/InstantID)
-
-## TODO
-- Support in diffusers API, check our [PR](https://github.com/huggingface/diffusers/pull/7668).
-- Support InstantID for face stylization once stars reach 1K.
 
 ## Disclaimer
 Our released codes and checkpoints are for non-commercial research purposes only. Users are granted the freedom to create images using this tool, but they are obligated to comply with local laws and utilize it responsibly. The developers will not assume any responsibility for potential misuse by users.
