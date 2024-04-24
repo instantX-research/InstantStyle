@@ -32,6 +32,7 @@ Injecting into Style Blocks Only. Empirically, each layer of a deep network capt
 </p>
 
 ## Release
+- [2024/04/24] 🔥 We support [HiDiffusion](https://github.com/megvii-research/HiDiffusion) for generating highres images, find more information [here](https://github.com/InstantStyle/InstantStyle/tree/main?tab=readme-ov-file#high-resolution-generation).
 - [2024/04/23] 🔥 InstantStyle has been natively supported in diffusers, more information can be found [here](https://github.com/huggingface/diffusers/pull/7668).
 - [2024/04/20] 🔥 InstantStyle is supported in [Mikubill/sd-webui-controlnet](https://github.com/Mikubill/sd-webui-controlnet/discussions/2770).
 - [2024/04/11] 🔥 We add the experimental distributed inference feature. Check it [here](https://github.com/InstantStyle/InstantStyle?tab=readme-ov-file#distributed-inference).
