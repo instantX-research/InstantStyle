@@ -131,6 +131,34 @@ images = ip_model.generate(pil_image=image,
 images[0].save("result.png")
 ```
 
+## High Resolution Generation
+We employ [HiDiffusion](https://github.com/megvii-research/HiDiffusion) to seamlessly generate high-resolution images, you can install via `pip install hidiffusion`.
+
+```
+from hidiffusion import apply_hidiffusion, remove_hidiffusion
+
+# reduce memory consumption
+pipe.enable_vae_tiling()
+
+# apply hidiffusion with a single line of code.
+apply_hidiffusion(pipe)
+
+...
+
+# generate image at higher resolution
+images = ip_model.generate(pil_image=image,
+                           prompt="a cat, masterpiece, best quality, high quality",
+                           negative_prompt= "text, watermark, lowres, low quality, worst quality, deformed, glitch, low contrast, noisy, saturation, blurry",
+                           scale=1.0,
+                           guidance_scale=5,
+                           num_samples=1,
+                           num_inference_steps=30, 
+                           seed=42,
+                           height=2048,
+                           width=2048
+                          )
+```
+
 ## Distributed Inference
 On distributed setups, you can run inference across multiple GPUs with 🤗 Accelerate or PyTorch Distributed, which is useful for generating with multiple prompts in parallel, in case you have limited VRAM on each GPU. More information can be found [here](https://huggingface.co/docs/diffusers/main/en/training/distributed_inference#device-placement). Make sure you have installed diffusers from the source and the lastest accelerate.
 
