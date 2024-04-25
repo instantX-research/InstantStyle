@@ -32,6 +32,7 @@ Injecting into Style Blocks Only. Empirically, each layer of a deep network capt
 </p>
 
 ## Release
+- [2024/04/24] 🔥 InstantStyle for fast generation, find demos at [InstantStyle-SDXL-Lightning](https://huggingface.co/spaces/radames/InstantStyle-SDXL-Lightning) and [InstantStyle-Hyper-SDXL](https://huggingface.co/spaces/radames/InstantStyle-Hyper-SDXL).
 - [2024/04/24] 🔥 We support [HiDiffusion](https://github.com/megvii-research/HiDiffusion) for generating highres images, find more information [here](https://github.com/InstantStyle/InstantStyle/tree/main?tab=readme-ov-file#high-resolution-generation).
 - [2024/04/23] 🔥 InstantStyle has been natively supported in diffusers, more information can be found [here](https://github.com/huggingface/diffusers/pull/7668).
 - [2024/04/20] 🔥 InstantStyle is supported in [Mikubill/sd-webui-controlnet](https://github.com/Mikubill/sd-webui-controlnet/discussions/2770).
@@ -184,6 +185,7 @@ python app.py
 ```
 
 ## Resources
+- [InstantStyle for WebUI](https://github.com/Mikubill/sd-webui-controlnet/discussions/2770)
 - [InstantStyle for ComfyUI](https://github.com/cubiq/ComfyUI_IPAdapter_plus)
 - [InstantID](https://github.com/InstantID/InstantID)
 
