@@ -19,7 +19,10 @@ InstantStyle is a general framework that employs two straightforward yet potent 
 
 <!-- <img src='assets/pipe.png'> -->
 
-<img src='assets/page0.png' width = 600 >
+<div align="center">
+<img src='assets/page0.png' width = 900 >
+</div>
+
 
 ## Principle
 
