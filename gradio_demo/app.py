@@ -1,5 +1,5 @@
 import sys
-sys.path.append('./')
+sys.path.append('../')
 
 import os 
 import cv2
@@ -9,15 +9,9 @@ import numpy as np
 from PIL import Image
 from diffusers import ControlNetModel, StableDiffusionXLControlNetPipeline
 
-import spaces
 import gradio as gr
 
 from ip_adapter import IPAdapterXL
-
-import os
-os.system("git lfs install")
-os.system("git clone https://huggingface.co/h94/IP-Adapter")
-os.system("mv IP-Adapter/sdxl_models sdxl_models")
 
 # global variable
 MAX_SEED = np.iinfo(np.int32).max
@@ -141,7 +135,6 @@ def run_for_examples(style_image, source_image, prompt, scale, control_scale):
         neg_content_scale=0,
     )
 
-@spaces.GPU(enable_queue=True)
 def create_image(image_pil,
                  input_image,
                  prompt,
