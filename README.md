@@ -17,7 +17,12 @@ InstantX Team
 
 InstantStyle is a general framework that employs two straightforward yet potent techniques for achieving an effective disentanglement of style and content from reference images.
 
-<img src='assets/pipe.png'>
+<!-- <img src='assets/pipe.png'> -->
+
+<div align="center">
+<img src='assets/page0.png' width = 900 >
+</div>
+
 
 ## Principle
 
@@ -32,6 +37,11 @@ Injecting into Style Blocks Only. Empirically, each layer of a deep network capt
 </p>
 
 ## Release
+- [2024/04/29] 🔥 We support InstantStyle natively in diffusers, usage can be found [here](https://github.com/InstantStyle/InstantStyle?tab=readme-ov-file#use-in-diffusers)
+- [2024/04/24] 🔥 InstantStyle for fast generation, find demos at [InstantStyle-SDXL-Lightning](https://huggingface.co/spaces/radames/InstantStyle-SDXL-Lightning) and [InstantStyle-Hyper-SDXL](https://huggingface.co/spaces/radames/InstantStyle-Hyper-SDXL).
+- [2024/04/24] 🔥 We support [HiDiffusion](https://github.com/megvii-research/HiDiffusion) for generating highres images, find more information [here](https://github.com/InstantStyle/InstantStyle/tree/main?tab=readme-ov-file#high-resolution-generation).
+- [2024/04/23] 🔥 InstantStyle has been natively supported in diffusers, more information can be found [here](https://github.com/huggingface/diffusers/pull/7668).
+- [2024/04/20] 🔥 InstantStyle is supported in [Mikubill/sd-webui-controlnet](https://github.com/Mikubill/sd-webui-controlnet/discussions/2770).
 - [2024/04/11] 🔥 We add the experimental distributed inference feature. Check it [here](https://github.com/InstantStyle/InstantStyle?tab=readme-ov-file#distributed-inference).
 - [2024/04/10] 🔥 We support an [online demo](https://modelscope.cn/studios/instantx/InstantStyle/summary) on ModelScope.
 - [2024/04/09] 🔥 We support an [online demo](https://huggingface.co/spaces/InstantX/InstantStyle) on Huggingface.
@@ -129,10 +139,145 @@ images = ip_model.generate(pil_image=image,
 images[0].save("result.png")
 ```
 
+## Use in diffusers
+InstantStyle has already been integrated into [diffusers](https://huggingface.co/docs/diffusers/main/en/using-diffusers/ip_adapter#style--layout-control) with a way more less complicate usage. You can granularly control per-transformer behavior of each IP-Adapter with ```set_ip_adapter_scale()``` method with a configure dictionary as shown below:
+
+```python
+from diffusers import StableDiffusionXLPipeline
+from PIL import Image
+import torch
+
+# load SDXL pipeline
+pipe = StableDiffusionXLPipeline.from_pretrained(
+    "stabilityai/stable-diffusion-xl-base-1.0",
+    torch_dtype=torch.float16,
+    add_watermarker=False,
+)
+
+# load ip-adapter
+pipe.load_ip_adapter("h94/IP-Adapter", subfolder="sdxl_models", weight_name="ip-adapter_sdxl.bin")
+pipe.enable_vae_tiling()
+
+# configure ip-adapter scales.
+scale = {
+    "down": {"block_2": [0.0, 1.0]},
+    "up": {"block_0": [0.0, 1.0, 0.0]},
+}
+pipeline.set_ip_adapter_scale(scale)
+```
+
+In this example. We set ```scale=1.0``` for IP-Adapter in the second transformer of down-part, block 2, and the second in up-part, block 0. Note that there are 2 transformers in down-part block 2 so the list is of length 2, and so do the up-part block 0. The rest IP-Adapter will have a zero scale which means disable them in all the other layers.
+
+With the help of ```set_ip_adapter_scale()```, we can now configure IP-Adapters without a need of reloading them everytime we want to test the IP-Adapter behaviors.
+
+```python
+# for original IP-Adapter
+scale = 1.0
+pipeline.set_ip_adapter_scale(scale)
+
+# for style blocks only
+scale = {
+    "up": {"block_0": [0.0, 1.0, 0.0]},
+}
+pipeline.set_ip_adapter_scale(scale)
+```
+
+### Multiple IP-Adapter images with masks
+You can also load multiple IP-Adapters, together with multiple IP-Adapter images with masks for more precisely layout control just as that in [IP-Adapter](https://huggingface.co/docs/diffusers/main/en/using-diffusers/ip_adapter#ip-adapter-masking) do.
+
+```python
+from diffusers import StableDiffusionXLPipeline
+from diffusers.image_processor import IPAdapterMaskProcessor
+from transformers import CLIPVisionModelWithProjection
+from PIL import Image
+import torch
+
+image_encoder = CLIPVisionModelWithProjection.from_pretrained(
+    "h94/IP-Adapter", subfolder="models/image_encoder", torch_dtype=torch.float16
+).to("cuda")
+
+pipe = StableDiffusionXLPipeline.from_pretrained(
+    "RunDiffusion/Juggernaut-XL-v9", torch_dtype=torch.float16, image_encoder=image_encoder, variant="fp16"
+).to("cuda")
+
+pipe.load_ip_adapter(
+    ["ostris/ip-composition-adapter", "h94/IP-Adapter"],
+    subfolder=["", "sdxl_models"],
+    weight_name=[
+        "ip_plus_composition_sdxl.safetensors",
+        "ip-adapter_sdxl_vit-h.safetensors",
+    ],
+    image_encoder_folder=None,
+)
+
+scale_1 = {
+    "down": [[0.0, 0.0, 1.0]],
+    "mid": [[0.0, 0.0, 1.0]],
+    "up": {"block_0": [[0.0, 0.0, 1.0], [1.0, 1.0, 1.0], [0.0, 0.0, 1.0]], "block_1": [[0.0, 0.0, 1.0]]},
+}
+# activate the first IP-Adapter in everywhere in the model,
+# configure the second one for precise style control to each masked input.
+pipe.set_ip_adapter_scale([1.0, scale_1])
+
+female_mask = Image.open("./assets/female_mask.png")
+male_mask = Image.open("./assets/male_mask.png")
+background_mask = Image.open("./assets/background_mask.png")
+mask2 = processor.preprocess([female_mask, male_mask, background_mask], height=1024, width=1024)
+mask2 = mask2.reshape(1, mask2.shape[0], mask2.shape[2], mask2.shape[3])   # output -> (1, 3, 1024, 1024)
+
+ip_female_style = Image.open("./assets/ip_female_style.png")
+ip_male_style = Image.open("./assets/ip_male_style.png")
+ip_background = Image.open("./assets/ip_background.png")
+ip_composition_image = Image.open("./assets/ip_composition_image.png")
+
+image = pipe(
+    prompt="high quality, cinematic photo, cinemascope, 35mm, film grain, highly detailed",
+    negative_prompt="",
+    ip_adapter_image=[ip_composition_image, [ip_female_style, ip_male_style, ip_background]],
+    cross_attention_kwargs={"ip_adapter_masks": [mask1, mask2]},
+    guidance_scale=6.5,
+    num_inference_steps=25,
+).images[0]
+image
+
+```
+
+<p align="center">
+  <img src="assets/multi_instantstyle.png">
+</p>
+
+## High Resolution Generation
+We employ [HiDiffusion](https://github.com/megvii-research/HiDiffusion) to seamlessly generate high-resolution images, you can install via `pip install hidiffusion`.
+
+```python
+from hidiffusion import apply_hidiffusion, remove_hidiffusion
+
+# reduce memory consumption
+pipe.enable_vae_tiling()
+
+# apply hidiffusion with a single line of code.
+apply_hidiffusion(pipe)
+
+...
+
+# generate image at higher resolution
+images = ip_model.generate(pil_image=image,
+                           prompt="a cat, masterpiece, best quality, high quality",
+                           negative_prompt= "text, watermark, lowres, low quality, worst quality, deformed, glitch, low contrast, noisy, saturation, blurry",
+                           scale=1.0,
+                           guidance_scale=5,
+                           num_samples=1,
+                           num_inference_steps=30, 
+                           seed=42,
+                           height=2048,
+                           width=2048
+                          )
+```
+
 ## Distributed Inference
 On distributed setups, you can run inference across multiple GPUs with 🤗 Accelerate or PyTorch Distributed, which is useful for generating with multiple prompts in parallel, in case you have limited VRAM on each GPU. More information can be found [here](https://huggingface.co/docs/diffusers/main/en/training/distributed_inference#device-placement). Make sure you have installed diffusers from the source and the lastest accelerate.
 
-```
+```python
 max_memory = {0:"10GB", 1:"10GB"}
 pipe = StableDiffusionXLPipeline.from_pretrained(
     base_model_path,
@@ -145,7 +290,7 @@ pipe = StableDiffusionXLPipeline.from_pretrained(
 
 ## Start a local gradio demo <a href='https://github.com/gradio-app/gradio'><img src='https://img.shields.io/github/stars/gradio-app/gradio'></a>
 Run the following command:
-```
+```sh
 git clone https://github.com/InstantStyle/InstantStyle.git
 cd ./InstantStyle/gradio_demo/
 pip install -r requirements.txt
@@ -153,15 +298,12 @@ python app.py
 ```
 
 ## Resources
+- [InstantStyle for WebUI](https://github.com/Mikubill/sd-webui-controlnet/discussions/2770)
 - [InstantStyle for ComfyUI](https://github.com/cubiq/ComfyUI_IPAdapter_plus)
 - [InstantID](https://github.com/InstantID/InstantID)
 
-## TODO
-- Support in diffusers API, check our [PR](https://github.com/huggingface/diffusers/pull/7586).
-- Support InstantID for face stylization once stars reach 1K.
-
 ## Disclaimer
-Our released codes and checkpoints are for non-commercial research purposes only. Users are granted the freedom to create images using this tool, but they are obligated to comply with local laws and utilize it responsibly. The developers will not assume any responsibility for potential misuse by users.
+The pretrained checkpoints follow the license in [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter?tab=readme-ov-file#download-models). Users are granted the freedom to create images using this tool, but they are obligated to comply with local laws and utilize it responsibly. The developers will not assume any responsibility for potential misuse by users.
 
 ## Acknowledgements
 InstantStyle is developed by the InstantX team and is highly built on [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter), which has been unfairly compared by many other works. We at InstantStyle make IP-Adapter great again. Additionally, we acknowledge [Hu Ye](https://github.com/xiaohu2015) for his valuable discussion.
