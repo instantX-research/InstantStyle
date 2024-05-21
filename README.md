@@ -222,6 +222,8 @@ pipe.set_ip_adapter_scale([1.0, scale_1])
 female_mask = Image.open("./assets/female_mask.png")
 male_mask = Image.open("./assets/male_mask.png")
 background_mask = Image.open("./assets/background_mask.png")
+composition_mask = Image.open("./assets/composition_mask.png")
+mask1 = processor.preprocess([composition_mask], height=1024, width=1024)
 mask2 = processor.preprocess([female_mask, male_mask, background_mask], height=1024, width=1024)
 mask2 = mask2.reshape(1, mask2.shape[0], mask2.shape[2], mask2.shape[3])   # output -> (1, 3, 1024, 1024)
 
