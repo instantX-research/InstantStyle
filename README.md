@@ -219,6 +219,7 @@ scale_1 = {
 # configure the second one for precise style control to each masked input.
 pipe.set_ip_adapter_scale([1.0, scale_1])
 
+processor = IPAdapterMaskProcessor()
 female_mask = Image.open("./assets/female_mask.png")
 male_mask = Image.open("./assets/male_mask.png")
 background_mask = Image.open("./assets/background_mask.png")
