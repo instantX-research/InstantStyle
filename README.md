@@ -140,7 +140,7 @@ images[0].save("result.png")
 ```
 
 ## Use in diffusers
-InstantStyle has already been integrated into [diffusers](https://huggingface.co/docs/diffusers/main/en/using-diffusers/ip_adapter#style--layout-control) with a way more less complicate usage. You can granularly control per-transformer behavior of each IP-Adapter with ```set_ip_adapter_scale()``` method with a configure dictionary as shown below:
+InstantStyle has already been integrated into [diffusers](https://huggingface.co/docs/diffusers/main/en/using-diffusers/ip_adapter#style--layout-control) (please make sure that you have installed diffusers>=0.28.0.dev0), making the usage significantly simpler. You can now control the per-transformer behavior of each IP-Adapter with the set_ip_adapter_scale() method, using a configuration dictionary as shown below:
 
 ```python
 from diffusers import StableDiffusionXLPipeline
