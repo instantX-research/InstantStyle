@@ -37,7 +37,8 @@ Injecting into Style Blocks Only. Empirically, each layer of a deep network capt
 </p>
 
 ## Release
-- [2024/07/01] 🔥 We release [InstantStyle-Plus](https://instantstyle-plus.github.io/) for content preserving.
+- [2024/07/06] 🔥 We release [CSGO](https://github.com/instantX-research/CSGO) page for content-style composition. Code will be released soon.
+- [2024/07/01] 🔥 We release [InstantStyle-Plus](https://instantstyle-plus.github.io/) report for content preserving.
 - [2024/04/29] 🔥 We support InstantStyle natively in diffusers, usage can be found [here](https://github.com/InstantStyle/InstantStyle?tab=readme-ov-file#use-in-diffusers)
 - [2024/04/24] 🔥 InstantStyle for fast generation, find demos at [InstantStyle-SDXL-Lightning](https://huggingface.co/spaces/radames/InstantStyle-SDXL-Lightning) and [InstantStyle-Hyper-SDXL](https://huggingface.co/spaces/radames/InstantStyle-Hyper-SDXL).
 - [2024/04/24] 🔥 We support [HiDiffusion](https://github.com/megvii-research/HiDiffusion) for generating highres images, find more information [here](https://github.com/InstantStyle/InstantStyle/tree/main?tab=readme-ov-file#high-resolution-generation).
