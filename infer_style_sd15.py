@@ -4,7 +4,7 @@ from PIL import Image
 
 from ip_adapter import IPAdapter
 
-base_model_path = "runwayml/stable-diffusion-v1-5"
+base_model_path = "sd-legacy/stable-diffusion-v1-5"
 image_encoder_path = "models/image_encoder"
 ip_ckpt = "models/ip-adapter_sd15.bin"
 device = "cuda"
